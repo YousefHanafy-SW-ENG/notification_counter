@@ -1,16 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:notification_counter/core/helpers/app_assets.dart';
 
 class PillBottomNav extends StatelessWidget {
-  const PillBottomNav({
+  const PillBottomNav._({
     super.key,
     required this.currentIndex,
     required this.onTap,
-    this.items = const [
-      PillNavItem(Icons.home_rounded),
-      PillNavItem(Icons.add_circle_outline_rounded),
-      PillNavItem(Icons.chat_bubble_outline_rounded),
-      PillNavItem(Icons.person_outline_rounded),
-    ],
+    required this.items,
     this.margin = const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
     this.height = 64,
     this.background = const Color(0xFF2C2C2E),
@@ -19,6 +16,41 @@ class PillBottomNav extends StatelessWidget {
     this.inactiveIconColor = Colors.white,
     this.inactiveIconOpacity = 0.85,
   });
+
+  /// Factory constructor so you can provide custom items or rely on defaults.
+  factory PillBottomNav({
+    Key? key,
+    required int currentIndex,
+    required ValueChanged<int> onTap,
+    List<PillNavItem>? items,
+    EdgeInsets margin = const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+    double height = 64,
+    Color background = const Color(0xFF2C2C2E),
+    Color activeItemBg = Colors.black,
+    Color activeIconColor = const Color(0xFFB7FF7A),
+    Color inactiveIconColor = Colors.white,
+    double inactiveIconOpacity = 0.85,
+  }) {
+    return PillBottomNav._(
+      key: key,
+      currentIndex: currentIndex,
+      onTap: onTap,
+      items: items ??
+          [
+            PillNavItem(AppAssets.icons.homeIcon),
+            PillNavItem(AppAssets.icons.plusIcon),
+            PillNavItem(AppAssets.icons.speechBubbleIcon),
+            PillNavItem(AppAssets.icons.personIcon),
+          ],
+      margin: margin,
+      height: height,
+      background: background,
+      activeItemBg: activeItemBg,
+      activeIconColor: activeIconColor,
+      inactiveIconColor: inactiveIconColor,
+      inactiveIconOpacity: inactiveIconOpacity,
+    );
+  }
 
   final int currentIndex;
   final ValueChanged<int> onTap;
@@ -38,7 +70,7 @@ class PillBottomNav extends StatelessWidget {
       top: false,
       minimum: margin,
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16),
+        padding: const EdgeInsets.symmetric(horizontal: 40),
         child: Container(
           height: height,
           padding: const EdgeInsets.symmetric(horizontal: 14),
@@ -59,14 +91,14 @@ class PillBottomNav extends StatelessWidget {
               final selected = i == currentIndex;
               if (selected) {
                 return _SelectedCircleButton(
-                  icon: items[i].icon,
+                  assetPath: items[i].assetPath,
                   onTap: () => onTap(i),
                   bg: activeItemBg,
                   iconColor: activeIconColor,
                 );
               } else {
                 return _IconButton(
-                  icon: items[i].icon,
+                  assetPath: items[i].assetPath,
                   onTap: () => onTap(i),
                   color: inactiveIconColor.withOpacity(inactiveIconOpacity),
                 );
@@ -80,19 +112,19 @@ class PillBottomNav extends StatelessWidget {
 }
 
 class PillNavItem {
-  final IconData icon;
-  const PillNavItem(this.icon);
+  final String assetPath; // expects an SVG asset path
+  const PillNavItem(this.assetPath);
 }
 
 class _SelectedCircleButton extends StatelessWidget {
   const _SelectedCircleButton({
-    required this.icon,
+    required this.assetPath,
     required this.onTap,
     required this.bg,
     required this.iconColor,
   });
 
-  final IconData icon;
+  final String assetPath;
   final VoidCallback onTap;
   final Color bg;
   final Color iconColor;
@@ -105,14 +137,19 @@ class _SelectedCircleButton extends StatelessWidget {
         onTap: onTap,
         radius: 28,
         child: Container(
-          width: 48,
-          height: 48,
+          width: 56,
+          height: 56,
           decoration: BoxDecoration(
             color: bg,
             shape: BoxShape.circle,
           ),
           alignment: Alignment.center,
-          child: Icon(icon, size: 26, color: iconColor),
+          child: SvgPicture.asset(
+            assetPath,
+            width: 28,
+            height: 28,
+            colorFilter: ColorFilter.mode(iconColor, BlendMode.srcIn),
+          ),
         ),
       ),
     );
@@ -121,12 +158,12 @@ class _SelectedCircleButton extends StatelessWidget {
 
 class _IconButton extends StatelessWidget {
   const _IconButton({
-    required this.icon,
+    required this.assetPath,
     required this.onTap,
     required this.color,
   });
 
-  final IconData icon;
+  final String assetPath;
   final VoidCallback onTap;
   final Color color;
 
@@ -138,9 +175,14 @@ class _IconButton extends StatelessWidget {
         onTap: onTap,
         radius: 28,
         child: SizedBox(
-          width: 48,
-          height: 48,
-          child: Icon(icon, size: 26, color: color),
+          width: 28,
+          height: 28,
+          child: SvgPicture.asset(
+            assetPath,
+            width: 28,
+            height: 28,
+            colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
+          ),
         ),
       ),
     );

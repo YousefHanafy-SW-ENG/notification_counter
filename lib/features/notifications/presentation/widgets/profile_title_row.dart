@@ -30,9 +30,6 @@ class ProfileRowTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final subColor = theme.textTheme.bodyMedium?.color?.withOpacity(0.6);
-
     return InkWell(
       onTap: onTap,
       child: Row(

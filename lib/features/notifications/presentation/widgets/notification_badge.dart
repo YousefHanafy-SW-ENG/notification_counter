@@ -1,3 +1,4 @@
+import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:notification_counter/core/theming/app_colors.dart';
@@ -7,29 +8,21 @@ import '../providers/notification_notifier.dart';
 class NotificationBadge extends ConsumerStatefulWidget {
   const NotificationBadge({
     super.key,
-    this.introDuration = const Duration(milliseconds: 1000),
-    this.swingDuration = const Duration(milliseconds: 2000),
-    this.perspective = 0.0,
-    this.introStartAngle = 0.0,
+    this.introDuration = const Duration(milliseconds: 3000),
+    this.swingDuration = const Duration(milliseconds: 3000),
+    this.introStartAngle = -1.35,
     this.introEndAngle = 0.0,
     this.introScaleBegin = 0.0,
     this.introScaleEnd = 1.0,
-    this.autoChain = true,
   });
 
-  /// timing
   final Duration introDuration;
   final Duration swingDuration;
 
-  /// look/feel
-  final double perspective;
   final double introStartAngle;
   final double introEndAngle;
   final double introScaleBegin;
-  final double introScaleEnd;     
-
-  /// behavior
-  final bool autoChain;
+  final double introScaleEnd;
 
   @override
   ConsumerState<NotificationBadge> createState() => _NotificationBadgeState();
@@ -37,17 +30,12 @@ class NotificationBadge extends ConsumerStatefulWidget {
 
 class _NotificationBadgeState extends ConsumerState<NotificationBadge>
     with TickerProviderStateMixin {
-
-  // -------- Controllers --------
   late final AnimationController _introCtrl;
   late final AnimationController _swingCtrl;
 
-  // -------- Intro animations --------
   late final Animation<double> _fadeIntro;
   late final Animation<double> _scaleIntro;
   late final Animation<double> _rotYIntro;
-  late final Animation<double> _txIntro;    // subtle right→left x-shift (accentuates flip)
-
   late final Animation<double> _swingAngle;
 
   bool _started = false;
@@ -55,8 +43,8 @@ class _NotificationBadgeState extends ConsumerState<NotificationBadge>
   @override
   void initState() {
     super.initState();
-
-    _introCtrl = AnimationController(vsync: this, duration: widget.introDuration);
+    _introCtrl =
+        AnimationController(vsync: this, duration: widget.introDuration);
 
     _fadeIntro = CurvedAnimation(
       parent: _introCtrl,
@@ -67,8 +55,9 @@ class _NotificationBadgeState extends ConsumerState<NotificationBadge>
       begin: widget.introScaleBegin,
       end: widget.introScaleEnd,
     ).animate(
-      CurvedAnimation(parent: _introCtrl, curve: Curves.easeInQuad),
+      CurvedAnimation(parent: _introCtrl, curve: Curves.easeOutBack),
     );
+
     _rotYIntro = Tween<double>(
       begin: widget.introStartAngle,
       end: widget.introEndAngle,
@@ -76,21 +65,18 @@ class _NotificationBadgeState extends ConsumerState<NotificationBadge>
       CurvedAnimation(parent: _introCtrl, curve: Curves.easeOutCubic),
     );
 
-    _txIntro = Tween<double>(begin: 10.0, end: 0.1).animate(
-      CurvedAnimation(parent: _introCtrl, curve: Curves.easeOutCubic),
-    );
-    _swingCtrl = AnimationController(vsync: this, duration: widget.swingDuration);
-    _swingAngle = TweenSequence<double>([
-      TweenSequenceItem(tween: Tween(begin: 0.0,   end: -0.28), weight: 1),
-      TweenSequenceItem(tween: Tween(begin: -0.28, end:  0.23), weight: 1),
-      TweenSequenceItem(tween: Tween(begin:  0.23, end: -0.15), weight: 1),
-      TweenSequenceItem(tween: Tween(begin: -0.15, end:  0.00), weight: 1),
-    ]).animate(
-      CurvedAnimation(parent: _swingCtrl, curve: Curves.easeOut),
-    );
+    _swingCtrl =
+        AnimationController(vsync: this, duration: widget.swingDuration);
 
-    _introCtrl.addStatusListener((s) {
-      if (s == AnimationStatus.completed && widget.autoChain) {
+    _swingAngle = TweenSequence<double>([
+      TweenSequenceItem(tween: Tween(begin: 0.0, end: -0.28), weight: 1),
+      TweenSequenceItem(tween: Tween(begin: -0.28, end: 0.23), weight: 1),
+      TweenSequenceItem(tween: Tween(begin: 0.23, end: -0.15), weight: 1),
+      TweenSequenceItem(tween: Tween(begin: -0.15, end: 0.0), weight: 1),
+    ]).animate(CurvedAnimation(parent: _swingCtrl, curve: Curves.easeOut));
+
+    _introCtrl.addStatusListener((status) {
+      if (status == AnimationStatus.completed) {
         _swingCtrl.forward(from: 0.0);
       }
     });
@@ -114,6 +100,7 @@ class _NotificationBadgeState extends ConsumerState<NotificationBadge>
   @override
   Widget build(BuildContext context) {
     final state = ref.watch(notificationProvider);
+
     ref.listen(notificationProvider, (prev, next) {
       if (!mounted) return;
       if ((prev?.count ?? 0) != next.count && next.count > 0 && _started) {
@@ -128,17 +115,16 @@ class _NotificationBadgeState extends ConsumerState<NotificationBadge>
       child: AnimatedBuilder(
         animation: Listenable.merge([_introCtrl, _swingCtrl]),
         builder: (context, child) {
-          final introM = Matrix4.identity()
-            ..setEntry(0, 2, 0.0022)
-            ..rotateY(_rotYIntro.value)
-            ..scale(_scaleIntro.value);
-          return Transform(
-            alignment: Alignment.centerRight,
-            transform: introM,
-            child: Transform.rotate(
-              alignment: Alignment.topCenter,
-              angle: _swingAngle.value,
-              child: child,
+          return Transform.scale(
+            scale: _scaleIntro.value,
+            child: AnimatedRotation(
+              turns: _rotYIntro.value / (2 * math.pi),
+              duration: Duration.zero,
+              child: Transform.rotate(
+                alignment: Alignment.topCenter,
+                angle: _swingAngle.value,
+                child: child,
+              ),
             ),
           );
         },

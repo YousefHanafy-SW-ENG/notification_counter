@@ -6,7 +6,8 @@ class AppColors {
   static const blackBadgeColor = Color(0xFF21272A);
   static const whiteBackground = Color(0xFFF7F7F7);
   static const greyTextColor = Color(0xFF878886);
-  static const brownColor = Color(0xFF8B6A4E);
+  static const blackShadow = Color(0x02020214);
+  static const greyContainerColor = Color(0xFFE9EAE8);
   static const brownWhiteColor = Color(0xFFA78E79);
   static const brownWhiteColor2 = Color(0xFFC5B4A7);
   static const brownDarkColor = Color(0xFF2B2521);
