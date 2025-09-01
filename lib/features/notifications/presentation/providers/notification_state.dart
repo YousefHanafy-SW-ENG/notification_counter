@@ -4,7 +4,7 @@ class NotificationState {
   final String? error;
 
   const NotificationState({
-    this.count = 0,
+    this.count = 12,
     this.isLoading = false,
     this.error,
   });

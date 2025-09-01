@@ -6,7 +6,7 @@ class RadioButtonTheme {
     fillColor:
         WidgetStateProperty.resolveWith<Color>((Set<WidgetState> states) {
       if (states.contains(WidgetState.selected)) {
-        return AppColors.primaryColor;
+        return AppColors.greenColor;
       }
       return Colors.grey;
     }),

@@ -25,7 +25,7 @@ class CustomText extends StatelessWidget {
     required this.text,
     this.fontSize = 12,
     this.fontWeight = FontWeight.w400,
-    this.fontFamily = AppStrings.dinTextArabicFont,
+    this.fontFamily = AppStrings.montserratFont,
     this.color = AppColors.black,
     this.decorationColor = AppColors.black,
     this.textAlign = TextAlign.right,
