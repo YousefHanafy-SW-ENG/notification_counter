@@ -6,10 +6,9 @@ A Flutter project implementing a clean-architecture-based notification counter w
 - **Flutter**: Cross-platform mobile development framework.  
 - **Dart**: Optimized language for building fast, multi-platform apps.  
 - **Riverpod**: For state management and dependency injection.  
-- **Clean Architecture**: Layered approach ensuring separation of concerns and scalability.  
-##  Project Strucutre
-```
-✨ Features Implemented
+- **Clean Architecture**: Layered approach ensuring separation of concerns and scalability.
+
+## Features Implemented
 ----------------------
 
 *   **Clean Architecture Setup**Organized into data, domain, and presentation layers for scalability and maintainability.
@@ -37,6 +36,9 @@ A Flutter project implementing a clean-architecture-based notification counter w
     *   Green presence dot
         
 *   **Scalable Project Structure**Prepared for feature growth and easier maintenance.
+*   
+##  Project Strucutre
+```
 notification_counter/
 ├── .dart_tool/
 ├── .idea/
