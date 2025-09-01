@@ -9,7 +9,34 @@ A Flutter project implementing a clean-architecture-based notification counter w
 - **Clean Architecture**: Layered approach ensuring separation of concerns and scalability.  
 ##  Project Strucutre
 ```
+✨ Features Implemented
+----------------------
 
+*   **Clean Architecture Setup**Organized into data, domain, and presentation layers for scalability and maintainability.
+    
+*   **Riverpod State Management**Implemented using StateNotifier for reactive and testable state management.
+    
+*   **Notification Badge with Animations**
+    
+    *   **Intro Flip**: Badge rotates in from the left while fading and scaling in.
+        
+    *   **Auto Swing**: After the flip completes, the badge swings naturally.
+        
+    *   **Reactive Updates**: Swing animation replays automatically when the count changes.
+        
+    *   **Custom Painter**: Badge bubble and pointer triangle drawn for pixel-perfect design.
+        
+*   **Reusable Custom App Bar**
+    
+    *   Tabs ("For you" and "Following")
+        
+    *   Notification icon with animated badge
+        
+    *   Action icons (reply, filter)
+        
+    *   Green presence dot
+        
+*   **Scalable Project Structure**Prepared for feature growth and easier maintenance.
 notification_counter/
 ├── .dart_tool/
 ├── .idea/
